@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="editor block">
+    <app-ngx-editor [config]="editorConfig" [spellcheck]="true" [(ngModel)]="htmlContent" (ngModelChange)="changeEvent()"></app-ngx-editor>
+  </div>
+
+  <div *ngIf="htmlContent" class="htmlblock block">
+    <h6>HTML Output</h6>
+    <div class="html">
+      {{ htmlContent }}
+    </div>
+  </div>
+</div>
