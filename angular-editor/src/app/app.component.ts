@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppService } from './app.service';
 import { Subject } from 'rxjs/Subject';
-import * as io from "socket.io-client";
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subject<any> = new Subject();
   namespace = '/test';
   socket = io('http://localhost:5000');
-
+  send_flag = true;
+  temp_content = '';
 
 
 
@@ -47,23 +48,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.socket.on('connect', function() {
-    //     this.socket.emit('my_event', {data: 'I\'m connected!'});
-    // });
-    this.socket.emit('my_event', {data: "Hello world"});
-    // this.socket.on('test', function (data) {
-    //   this.socket.emit('chat', "data");
-    // });
-    // this.socket.on('updatechat', function (username, data) {
-    //     this.socket.emit("test", "Hello world")
-    // });
 
-    // this.socket.on('roomcreated', function (data) {
-    //   this.socket.emit('adduser', data);
-    // });
-
-
-
+    this.socket.emit('my_event', {data: 'I just connected'});
+    this.socket.on('my_response', (data) => {
+      if (data.senderid !== this.socket.id) {
+        console.log(`You seceived message from others *** ${data.data} ***, :  Sender : ${data.senderid}, Receiver: ${this.socket.id}`);
+        this.temp_content = data.data.slice(0);
+        if (this.temp_content.length === data.len) {
+          this.htmlContent = this.temp_content;
+        }
+      } else {
+        console.log(`You seceived message from others *** ${data.data} ***, :  Sender : ${data.senderid}, Receiver: ${this.socket.id}`);
+      }
+    });
     this.getLatestRelease();
   }
 
@@ -72,11 +69,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   changeEvent() {
-    this.socket.emit("my_broadcast_event", { data: this.htmlContent })
-    this.socket.on('my_response', (data)=>{
-      console.log(data)
-      this.htmlContent = data.data;
-    })
+    if ( this.send_flag === true) {
+      this.send_flag = false;
+      setTimeout(() => {
+        this.socket.emit('my_event', {data : this.htmlContent, len : this.htmlContent.length, senderid : this.socket.id});
+        this.send_flag = true;
+      }, 1000);
+
+    }
   }
 
 }
