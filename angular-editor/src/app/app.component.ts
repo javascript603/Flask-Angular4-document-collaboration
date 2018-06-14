@@ -25,9 +25,9 @@ export class AppComponent implements OnInit, OnDestroy {
   editorConfig = {
     editable: true,
     spellcheck: false,
-    height: '10rem',
+    height: '90vh',
     minHeight: '5rem',
-    placeholder: 'Type something. Test the Editor...',
+    placeholder: '',
     translate: 'no'
   };
 
