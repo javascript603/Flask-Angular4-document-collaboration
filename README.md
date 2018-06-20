@@ -1,5 +1,6 @@
 # document-collaboration
 
+If you want to run this project using IP address, You need to set the websocket URL in the backend and frontend sides.
 
 ## Frontend
 
